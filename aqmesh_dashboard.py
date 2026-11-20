@@ -15,7 +15,7 @@ st.set_page_config(page_title="AQMesh air quality", layout="wide")
 @st.cache_data(ttl=CACHE_SECONDS)
 def load_gas():
     cols = {"reading_datestamp": "date_time", "co_prescaled": "co", "no_prescaled": "no",
-            "no2_prescaled": "no2", "eo_prescaled": "voc", "uart_prescaled": "co2"}
+            "no2_prescaled": "no2", "o3_prescaled": "o3", "eo_prescaled": "voc", "uart_prescaled": "co2"}
     df = pd.read_csv(DATA_DIR / "gas_master.csv", usecols=list(cols),
                      parse_dates=["reading_datestamp"]).rename(columns=cols)
     df = df[df["date_time"] >= CUTOFF].sort_values("date_time")
@@ -78,6 +78,9 @@ line_plot(gas, {"co": "CO"}, "CO (ppb)")
 
 st.subheader("Volatile organic compounds (VOC, ethylene oxide sensor)")
 line_plot(gas, {"voc": "VOC"}, "VOC (ppb)")
+
+st.subheader("Ozone (O3)")
+line_plot(gas, {"o3": "O3"}, "O3 (ppb)")
 
 st.subheader("Nitrogen oxides (NOx)")
 line_plot(gas, {"nox": "NOx", "no2": "NO2", "no": "NO"}, "Concentration (ppb)",
